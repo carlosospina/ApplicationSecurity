@@ -21,7 +21,7 @@ public class TMMain {
 	/**
 	 * Maximum tape size
 	 */
-	private static int maxTapeSize=50;
+	private static int maxTapeSize=2048;
 	
 	/**
 	 * The entry point to the program
@@ -193,7 +193,7 @@ public class TMMain {
 		}
 		//Check the value of the Action column. It should be R, L or H
 		//Only one character and not empty
-		if(!lineArr[4].matches("^[RLHP]$")){
+		if(!lineArr[4].matches("^[RLHPID]$")){
 			throw new RuntimeException("Line "+lineNumber+". Malformed command line. Action invalid: "+line);
 		}
 		return lineArr;
@@ -230,6 +230,8 @@ public class TMMain {
 				 "\t\tL: Move the head left\n"+
 				 "\t\tH: Stop\n" +
 				 "\t\tP: Print to output\n" +
+				 "\t\tI: Insert a blank space left to current position\n" +
+				 "\t\tI: Delete (Remove) space under the head\n" +
 				 "\tComments are allowed by using the '#' character\n"+
 				 "\texample: 0,1,1,1,R\t# Some comment\n");
 		welcomeMsg.append("\nTape File: Is a file with the initial values of the tape, \n" +

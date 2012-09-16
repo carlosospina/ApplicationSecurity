@@ -9,12 +9,31 @@
 # - Y = Position last read (internal use)
 # - X = Position masked as deleted (internal use)
 
-#Initial State
-0,_,0,_,R # If _ found, move right
-0,M,100,M,R # If 1 found, move right and go to S-100
+#Initial State. Look for a M
+0,_,0,_,R # If _ found, move right, call S-1
+0,M,1,M,L # If 1 found, move left
+
+#S-1 We move one step more to the left of the M.
+1,_,2,_,L # Move one space more to the left
+
+#S-2 We add the control Character
+2,_,100,A,R # Add the control character A=1
+2,A,100,B,R # Add the control character B=2
+2,B,100,C,R # Add the control character C=3
+2,C,100,D,R # Add the control character D=4
+2,D,100,E,R # Add the control character E=5
+2,E,100,F,R # Add the control character F=6
+2,F,100,G,R # Add the control character G=7
+2,G,100,H,R # Add the control character H=8
+2,H,100,I,R # Add the control character I=9
+2,I,100,J,R # Add the control character J=10
+2,J,100,K,H # Add the control character K=11
+
+#S-5 Halt state
+5,_,5,_,H
 
 #=========== State 100-103 copy the 1's from the <n-2 result> to the <n result> ==
-#S-100: Find the left edge of the tape
+#S-100: Find the left edge of the tape, before the control character
 100,1,100,1,L # Find left edge of tape
 100,M,100,M,L # Find left edge of tape
 100,L,100,L,L # Find left edge of tape
@@ -41,10 +60,10 @@
 103,L,103,L,L # Find left edge of tape
 103,Y,103,Y,L # Find left edge of tape
 103,X,103,X,L # Find left edge of tape
-103,_,101,1,R # If _ found, write the 1, go back to S-101 to find more 1's on n-2
+103,_,101,1,I # If _ found, write the 1, go back to S-101 to find more 1's on n-2
 
 #=========== State 200-203 copy the 1's from the <n-1 result> to the <n result> ==
-#S-200: Find the left edge of the tape
+#S-200:Find the left edge of the tape, before the control character
 200,1,200,1,L # Find left edge of tape
 200,M,200,M,L # Find left edge of tape
 200,L,200,L,L # Find left edge of tape
@@ -53,6 +72,7 @@
 200,_,201,_,R # If _ found, go to S-201 to find n-1
 
 # S-201: Find the beginning of n-1 (L), given you're standing at the left edge of the tape
+201,_,201,_,R # If _ found, move to the right
 201,1,201,1,R # If 1 found, move to the right
 201,L,201,L,R # If M found, move to the right
 201,Y,201,Y,R # If X found, move to the right
@@ -71,10 +91,10 @@
 203,L,203,L,L # Find left edge of tape
 203,Y,203,Y,L # Find left edge of tape
 203,X,203,X,L # Find left edge of tape
-203,_,201,1,R # If _ found, write the 1, move right and go to 201 to find more 1's on n-1
+203,_,201,1,I # If _ found, write the 1, and Insert a blank before head go to 201 to find more 1's on n-1
 
 #========= 300-303 Copies X's from n-1 to n-2 as 1's =========
-#S-300: Find the left edge of the tape
+#S-300: Find the left edge of the tape, before the control character
 300,1,300,1,L # Find left edge of tape
 300,M,300,M,L # Find left edge of tape
 300,L,300,L,L # Find left edge of tape
@@ -104,7 +124,7 @@
 
 #========= 400-403 Copies 1's from n to n-1  =========
 #This algorithm will move the M to the left to copy all values of n to n-1
-#S-400: Find the left edge of the tape
+#S-400: Find the left edge of the tape, before the control character
 400,1,400,1,L # Find left edge of tape
 400,M,400,M,L # Find left edge of tape
 400,L,400,L,L # Find left edge of tape
@@ -113,8 +133,8 @@
 400,_,401,_,R # If _ found, go to S-401 to find the beginning of M
 
 # S-401: Find 1's to copy from result n to result n-1 
-401,1,402,_,R # If 1 found, change to _ and go to S-402 (write 1 to N-1)
-401,M,401,M,H # If _ found, you have completed copying. n-1 to n-2. NOW?????
+401,1,402,_,D # If 1 found, delete it and go to S-402 (write 1 to N-1)
+401,M,1,M,L # If _ found, you have completed copying. n to n-1. Do next fibonacci
 
 # S-402: Find the beginning of n-1 (M)
 402,1,402,1,R # If 1 found, move to the right
@@ -123,27 +143,10 @@
 # S-403: Find a Y that can be replaced on M 
 403,Y,400,1,R # If Y found, move to the right, and find another 1
 403,1,403,1,R # If 1 found, move to the right
-403,L,404,L,L # Found the end of M found, No Y available, go to 404
+403,L,404,L,I # Found the end of M found, No Y available, so Insert one and go to 404
 
-# S-404 No Y spaces on M, Move N one position to the left, move M one position to
-# the left and add the 1
-404,1,4041,1,R # If 1 found, go to S-4041
+# S-404 New space at left of L, move left and add the 1
+404,L,404,L,L # If L found, Move left
+404,_,400,1,L # Add the one, go to S-400 to find more 1's
 
-# S-4041 Find the left edge of the tape, replace it with 1
-4041,1,4041,1,L # Find left edge of tape
-4041,M,4041,M,L # Find left edge of tape
-4041,L,4041,L,L # Find left edge of tape
-4041,Y,4041,Y,L # Find left edge of tape
-4041,X,4041,X,L # Find left edge of tape
-4041,_,4042,1,R # If _ found, add a 1, go to S-4042
-
-# S-4042: Find the beginning of n-1 (M), replace it for 1
-4042,1,4042,1,R # If 1 found, move to the right
-4042,M,4043,1,L # If M found, move to the left and go to S-4043
-
-# S-4043: Make the element to the left of M the new M
-4043,1,400,M,R # If 1 found, make it the M move to the right. Go to S-400
-
-#========== This function prints the 10 first numbers of fibonacci series ===
-#S-1 Leave a space of 100 spaces at the end o
 

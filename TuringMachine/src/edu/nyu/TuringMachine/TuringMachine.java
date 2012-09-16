@@ -126,14 +126,21 @@ public class TuringMachine {
 			case 'R': //Move right
 				headPosition++;
 				break;
+			case 'I': //Insert blank space at left of current position 
+				tape.insert(headPosition, "_");
+				//Correct head position
+				headPosition++;
+				break;
+			case 'D': //Remove space at the current position 
+				tape.deleteCharAt(headPosition);
+				break;
+			case 'P': //Print the Tape 
+				String resp=tape.toString();
+				//resp=resp.replace("_", "");
+				printTape("OUTPUT",stepNumber,key,headPosition,resp);		
+				break;
 			case 'H': //Halt
 				halt=true;
-				break;
-			case 'P': //Halt
-				//Print the Tape 
-				String resp=tape.toString();
-				resp=resp.replace("_", "");
-				printTape("OUTPUT",stepNumber,key,headPosition,resp);		
 				break;
 			default:
 				throw new RuntimeException("Invalid action: "+action+", Step: "+stepNumber);
@@ -160,6 +167,7 @@ public class TuringMachine {
 	 * @param tape the contents of the tape
 	 */
 	private void printTape(String reason, int stepNumber, String key, int headPosition, String tape){
+		
 		StringBuffer message=new StringBuffer();
 		message.append("%s==>");
 		message.append("Step %3d, ");
