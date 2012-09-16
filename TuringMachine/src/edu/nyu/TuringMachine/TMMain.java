@@ -42,7 +42,7 @@ public class TMMain {
 		HashMap<String, String> program = readProgram( args[0] );
 		StringBuffer tape = readTape( args[1] );
 		
-		TuringMachine tm=new TuringMachine(maxProgramSize,maxTapeSize,true);
+		TuringMachine tm=new TuringMachine(maxProgramSize,maxTapeSize,false);
 		tm.runTuringMachine( program, tape );
 	}
 
