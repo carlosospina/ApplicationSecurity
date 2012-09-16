@@ -1,0 +1,29 @@
+#Move to the left edge of the input, clean it
+0,0,0,_,R	#Move the head to the left most, cleaning
+0,1,0,_,R	#Move the head to the left most, cleaning
+0,_,1,0,L	#The left edge has been found, put a 0 and go to state 1
+#Print number 10 
+1,_,1,1,R	#Write the 1
+1,0,2,0,P	#Write the 0, print output, go to state 2
+#Print number 9
+2,0,2,9,L	#Write a 9, go to the left to changes 10's 1 to _
+2,1,2,_,R	#Write a _ on the 10's 1, move to the right
+2,9,3,9,P	#Print the 9, go to state 3
+#Print number 8
+3,9,4,8,P	#Write a 8, print the output, go to state 4
+#Print number 7
+4,8,5,7,P	#Write a 7, print the output, go to state 5
+#Print number 6
+5,7,6,6,P	#Write a 6, print the output, go to state 6
+#Print number 5
+6,6,7,5,P	#Write a 5, print the output, go to state 7
+#Print number 4
+7,5,8,4,P	#Write a 4, print the output, go to state 8
+#Print number 3
+8,4,9,3,P	#Write a 8, print the output, go to state 9
+#Print number 2
+9,3,10,2,P	#Write a 8, print the output, go to state 10
+#Print number 1
+10,2,11,1,P	#Write a 8, print the output, go to state 11
+# Stop
+11,1,11,1,H	#Halt

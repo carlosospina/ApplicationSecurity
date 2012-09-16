@@ -1,0 +1,14 @@
+# This programs adds 1 to the binary number on the initial tape
+
+#Move the most left side of the tape
+0,0,0,0,R	#Id there's data, move the head to the left 
+0,1,0,1,R	#Id there's data, move the head to the left 
+0,_,1,_,L	#The left edge has been found, go to state 1
+#Adding one
+1,0,0,1,H	#If found 0, replace for 1. Stop
+1,1,1,0,L	#If found 1, replace for 0. move left
+1,_,2,1,P	#If right end, replace for 1. Print and go to State 2
+#Halt State
+2,0,2,0,H
+2,1,2,1,H
+2,_,2,_,H
