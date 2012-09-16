@@ -21,7 +21,7 @@ public class TMMain {
 	/**
 	 * Maximum tape size
 	 */
-	private static int maxTapeSize=2048;
+	private static int maxTapeSize=50;
 	
 	/**
 	 * The entry point to the program
@@ -31,17 +31,18 @@ public class TMMain {
 	 */
 	public static void main(String[] args) {
 		//Check for input values
-		if(args.length!=2 || args[0]=="help"){
+		if(args.length<2 || args[0]=="help"){
 			printInstructions();
 			return;			
 		}else if(args[0]==null || args[1]==null){
 			printInstructions();
 			return;
 		}
+		
 		HashMap<String, String> program = readProgram( args[0] );
 		StringBuffer tape = readTape( args[1] );
 		
-		TuringMachine tm=new TuringMachine(maxProgramSize,maxTapeSize);
+		TuringMachine tm=new TuringMachine(maxProgramSize,maxTapeSize,true);
 		tm.runTuringMachine( program, tape );
 	}
 
@@ -59,18 +60,24 @@ public class TMMain {
 			BufferedReader in=new BufferedReader(tapeFile);
 			String line;
 			while( (line = in.readLine() ) != null ) {
-				String tapeStr=validateTape(line);
-				//Remove carry return
-				tapeStr.replace("\n", "");
-				//Replace spaces with B (blanks)
-				tapeStr.replace(" ", "B");				
-				//Append to the tape
-				tape.append(tapeStr);
-				if(tape.length()>maxTapeSize){
-					in.close();
-					throw new RuntimeException("The tape is larger than the Machine limit: "+maxTapeSize+ "characters");
+				//Split comments from line
+				String[] lineArrTemp=line.split("#");
+				//Trim the line, to remove trailing spaces 
+				line=lineArrTemp[0].trim();
+				//Check The line has a command.
+				if(line.length()!=0){
+					String tapeStr=validateTape(line);
+					//Remove carry return
+					tapeStr.replace("\n", "");
+					//Replace spaces with B (blanks)
+					tapeStr.replace(" ", "B");				
+					//Append to the tape
+					tape.append(tapeStr);
+					if(tape.length()>maxTapeSize){
+						in.close();
+						throw new RuntimeException("The tape is larger than the Machine limit: "+maxTapeSize+ "characters");
+					}
 				}
-
 			}
 			//Make sure the tape is initialized:
 			if(tape.length()==0){
@@ -94,9 +101,10 @@ public class TMMain {
 	private static HashMap<String, String> readProgram(String programPath) {
 		FileReader programFile;
 		HashMap<String,String> programHM=new HashMap<String,String>();
+		BufferedReader in=null;
 		try {
 			programFile = new FileReader(programPath);
-			BufferedReader in=new BufferedReader(programFile);
+			in=new BufferedReader(programFile);
 			String line;
 			int lineNumber=1;
 			while( (line = in.readLine() ) != null ) {
@@ -115,18 +123,26 @@ public class TMMain {
 					value.append(lineArr[2]).append(",");
 					value.append(lineArr[3]).append(",");
 					value.append(lineArr[4]);
-	
-					programHM.put(key.toString(), value.toString());
+					//Check the key is not repeated
+					if(programHM.get(key.toString())==null){
+						programHM.put(key.toString(), value.toString());
+					}else{
+						throw new RuntimeException("There's a duplicated state on the program at line "+lineNumber+". The key is:"+key.toString());						
+					}
 					if(programHM.size()>maxProgramSize){
-						in.close();
 						throw new RuntimeException("The program is larger than the Machine limit: "+maxProgramSize+ "lines");
 					}
 				}
 				lineNumber++;
 			}
-			in.close();
 		} catch (IOException e) {
 			throw new RuntimeException("The program file can't be found: "+new File(programPath).getAbsolutePath());
+		}finally{
+			try {
+				in.close();
+			} catch (IOException e) {
+				throw new RuntimeException("Error closing the stream: "+new File(programPath).getAbsolutePath());
+			}
 		}
 		return programHM;
 	}

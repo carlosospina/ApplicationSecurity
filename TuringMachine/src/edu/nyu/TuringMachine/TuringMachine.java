@@ -38,11 +38,16 @@ public class TuringMachine {
 	 * Maximum tape size
 	 */
 	private int maxTapeSize=2048;
-
 	
-	public TuringMachine(int maxProgramSize, int maxTapeSize) {
+	/**
+	 * Debug switch. True=do debug printing
+	 */
+	private boolean debug=false;
+	
+	public TuringMachine(int maxProgramSize, int maxTapeSize, boolean debug) {
 		this.maxProgramSize=maxProgramSize;
 		this.maxTapeSize=maxTapeSize;
+		this.debug=debug;
 	}
 
 	/**
@@ -95,7 +100,9 @@ public class TuringMachine {
 			key=currentState+","+currentValue;
 
 			//Print the Tape at the state
-			//printTape("DEBUG",stepNumber,key,headPosition,tape.toString());
+			if(debug){
+				printTape("DEBUG",stepNumber,key,headPosition,tape.toString());
+			}
 			
 			//Get the command for the key
 			command=program.get(key);
