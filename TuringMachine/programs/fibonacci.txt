@@ -1,6 +1,6 @@
 #This programs calculates the first 10 fibonacci numbers
 #Data representation will be given in n-1s representation: ex 111 = 3, 11111=5
-#The tape has to be initialized with the value 1M1L0
+#The tape has to be initialized with the value M1L
 #The response will be given by <n result>M<n-1 result>L<n-2 result>
 #The vocabulary of the program is:
 # - 1 = unary count for representation
@@ -17,17 +17,17 @@
 1,_,2,_,L # Move one space more to the left
 
 #S-2 We add the control Character
-2,_,100,A,R # Add the control character A=1
-2,A,100,B,R # Add the control character B=2
-2,B,100,C,R # Add the control character C=3
-2,C,100,D,R # Add the control character D=4
-2,D,100,E,R # Add the control character E=5
-2,E,100,F,R # Add the control character F=6
-2,F,100,G,R # Add the control character G=7
-2,G,100,H,R # Add the control character H=8
-2,H,100,I,R # Add the control character I=9
-2,I,100,J,R # Add the control character J=10
-2,J,100,K,H # Add the control character K=11
+2,_,100,0,R # Add the control character A=1
+2,0,100,1,R # Add the control character B=2
+2,1,100,2,R # Add the control character C=3
+2,2,100,3,R # Add the control character D=4
+2,3,100,4,R # Add the control character E=5
+2,4,100,5,R # Add the control character F=6
+2,5,100,6,R # Add the control character G=7
+2,6,100,7,R # Add the control character H=8
+2,7,100,8,R # Add the control character I=9
+2,8,100,9,R # Add the control character J=10
+2,9,100,0,H # Add the control character K=11
 
 #S-5 Halt state
 5,_,5,_,H

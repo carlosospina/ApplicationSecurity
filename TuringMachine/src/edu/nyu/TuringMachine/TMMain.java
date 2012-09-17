@@ -139,7 +139,9 @@ public class TMMain {
 			throw new RuntimeException("The program file can't be found: "+new File(programPath).getAbsolutePath());
 		}finally{
 			try {
-				in.close();
+				if(in!=null){
+					in.close();
+				}
 			} catch (IOException e) {
 				throw new RuntimeException("Error closing the stream: "+new File(programPath).getAbsolutePath());
 			}
@@ -237,8 +239,8 @@ public class TMMain {
 		welcomeMsg.append("\nTape File: Is a file with the initial values of the tape, \n" +
 				 "Each value can be any alphanumeric character (case insensitive) or '_' for blank");
 		welcomeMsg.append("\nAbout Limits:\n" +
-				"->The machine has a máximum program size that can be run of %d lines.\n" +
-				"->The machine has a máximum input tape lenght of %d places (bytes)");
+				"->The machine has a maximum program size that can be run of %d lines.\n" +
+				"->The machine has a maximum input tape lenght of %d places (bytes)");
 		
 		String welcomeStr=welcomeMsg.toString();
 		welcomeStr=String.format(welcomeStr,maxProgramSize,maxTapeSize);
