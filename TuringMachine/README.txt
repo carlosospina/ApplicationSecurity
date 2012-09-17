@@ -6,10 +6,10 @@ To Make the project:
 3) run: make
 
 To run the Project:
-run: java -cp bin TMMain <path to program file> <path to initial tape file>
+run: java -cp bin edu.nyu.TuringMachine.TMMain <path to program file> <path to initial tape file>
 
 To get usage help:
-run: java -cp bin TMMain help
+run: java -cp bin bin edu.nyu.TuringMachine.TMMain help
 
 Programs:
 The programs are inside the "programs" folder
